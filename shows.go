@@ -41,7 +41,6 @@ func (r *ShowsService) Search(query string) (shows []ShowResult, result *Result)
 
 func (r *ShowsService) IdLookup(idType string, id int) (shows []ShowResult, result *Result) {
 	url, _ := ShowsIdLookupURL.Expand(M{"id_type": idType, "id": id})
-	println(url.String())
 	result = r.client.get(url, &shows)
 	return
 }
