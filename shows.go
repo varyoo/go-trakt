@@ -3,9 +3,10 @@ package trakt
 import "fmt"
 
 var (
-	ShowURL         = Hyperlink("shows/{traktID}")
-	ShowsPopularURL = Hyperlink("shows/popular")
-	ShowsSearchURL  = Hyperlink("search?query={query}&type=show")
+	ShowURL 			= Hyperlink("shows/{traktID}")
+	ShowsPopularURL 	= Hyperlink("shows/popular")
+	ShowsSearchURL  	= Hyperlink("search?query={query}&type=show")
+	ShowsIdLookupURL	= Hyperlink("search?id_type={id_type}&id={id}")
 )
 
 // Create a ShowsService with the base url.URL
@@ -34,6 +35,13 @@ func (r *ShowsService) AllPopular() (shows []Show, result *Result) {
 
 func (r *ShowsService) Search(query string) (shows []ShowResult, result *Result) {
 	url, _ := ShowsSearchURL.Expand(M{"query": query})
+	result = r.client.get(url, &shows)
+	return
+}
+
+func (r *ShowsService) IdLookup(idType string, id int) (shows []ShowResult, result *Result) {
+	url, _ := ShowsIdLookupURL.Expand(M{"id_type": idType, "id": id})
+	println(url.String())
 	result = r.client.get(url, &shows)
 	return
 }
@@ -124,5 +132,6 @@ type ShowResult struct {
 		Title    string `json:"title"`
 		Year     int    `json:"year"`
 	} `json:"show"`
+	Episode struct {} `json:"-"`
 	Type string `json:"type"`
 }
